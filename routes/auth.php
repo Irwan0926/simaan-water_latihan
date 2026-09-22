@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 // Url untuk guest
 // perubahana n route untuk login, register, forgot password, reset password
+// Url untuk user yang sudah login
 Route::middleware('guest')->group(function () {
     
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
