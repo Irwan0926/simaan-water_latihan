@@ -1,0 +1,104 @@
+// Bootstrap overrides — green primary, dense app UI
+$font-family-sans-serif: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+$font-family-monospace: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+// Brand green as primary (user request + commercial product UI)
+$brand: #2ea84f;
+$brand-deep: #0f7a35;
+$ink: #0b0b0b;
+$ink-soft: #212121;
+$mute: #797979;
+$ash: #b9b9b9;
+$hairline: #ededed;
+$hairline-soft: #353535;
+$canvas: #0b0b0b;
+$canvas-soft: #212121;
+$canvas-light: #ffffff;
+$canvas-paper: #f6f7f6;
+$on-primary: #ffffff;
+$link-blue: #0052ef;
+$link-blue-soft: #55beff;
+$surface-blue-bg: #afe3ff;
+
+// Extended accent palette — dashboard only (home/landing stays green-minimal).
+// Green remains the primary/action color; these are supporting hues used for
+// data differentiation (stat tiles, nav groups, panel headers, icon boxes).
+$accent-violet: #6d4aff;
+$accent-violet-deep: #4a2fc7;
+$accent-violet-surface: #efeaff;
+$accent-cyan: #0d9bb5;
+$accent-cyan-deep: #0a7185;
+$accent-cyan-surface: #e0f7fb;
+$accent-amber: #e08600;
+$accent-amber-deep: #a35f00;
+$accent-amber-surface: #fff2d9;
+$accent-rose: #e0447a;
+$accent-rose-deep: #b02659;
+$accent-rose-surface: #ffe7ef;
+$accent-indigo: #2f5fd8;
+$accent-indigo-deep: #1e42a0;
+$accent-indigo-surface: #e6edff;
+$accent-teal: #0f9f7a;
+$accent-teal-deep: #0a7657;
+$accent-teal-surface: #e2f8f1;
+
+$badge-red-surface: #ffe3e3;
+$badge-red-text: #b42318;
+$badge-amber-surface: #fef7c0;
+$badge-amber-text: #93670b;
+$badge-green-surface: #e6fbef;
+$badge-green-text: #057047;
+$badge-blue-surface: #d6efff;
+$badge-blue-text: #0052ef;
+$badge-neutral-surface: #f2f2f2;
+$badge-neutral-text: #353535;
+
+$primary: $brand;
+$secondary: $mute;
+$success: #37cd84;
+$danger: #dd0000;
+$info: $link-blue;
+$warning: $badge-amber-text;
+$light: $canvas-paper;
+$dark: $ink;
+
+$body-bg: #f4f6f5;
+$body-color: $ink-soft;
+
+$link-color: $brand-deep;
+$link-hover-color: $ink;
+
+$border-radius: 0.5rem; // 8px — modern app
+$border-radius-sm: 0.375rem; // 6px
+$border-radius-lg: 0.75rem; // 12px
+$border-radius-pill: 50rem;
+$border-color: #e6e9e7;
+
+$input-btn-padding-y: 0.5rem;
+$input-btn-padding-x: 0.875rem;
+$input-btn-font-size: 0.875rem;
+$input-border-radius: 0.5rem;
+$input-border-color: #e0e4e2;
+$input-focus-border-color: $brand;
+$input-focus-box-shadow: 0 0 0 0.2rem rgba(46, 168, 79, 0.15);
+$input-height: 2.5rem;
+$form-select-border-radius: 0.5rem;
+
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: 1280px
+);
+
+$enable-negative-margins: true;
+$spacer: 1rem;
+
+$shadow-card: 0 1px 2px rgba(11, 11, 11, 0.04), 0 4px 12px -6px rgba(11, 11, 11, 0.08);
+$shadow-card-hover: 0 2px 6px rgba(11, 11, 11, 0.06), 0 10px 24px -10px rgba(11, 11, 11, 0.12);
+$shadow-nav: 0 1px 0 rgba(11, 11, 11, 0.04);
+$shadow-sticky-cta: 0 -1px 0 rgba(11, 11, 11, 0.05), 0 -8px 16px -8px rgba(11, 11, 11, 0.08);
+$shadow-inner-top: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+
+$sidebar-width: 240px;

@@ -1,0 +1,360 @@
+// ============================================================================
+// Dashboard color layer
+// ----------------------------------------------------------------------------
+// Adds supporting accent hues to the authenticated app shell only.
+//
+// Scope rules:
+//   * Everything here is nested under `.app-shell`, which only exists in
+//     `layouts/app.blade.php`. The landing page (`body.landing`,
+//     `welcome.blade.php`) and the guest shell are deliberately untouched.
+//   * Green stays the primary/action color: buttons, active nav, focus rings
+//     and primary CTAs are never recolored here.
+//   * Semantic colors keep their meaning. Tiles carrying `.stat-accent`
+//     (error / amber / brand) are excluded from the hue rotation so
+//     "Stok Menipis" stays red and "Perlu Promosi" stays green.
+//   * Selectors avoid depending on the position of conditional markup (flash
+//     alerts, role-gated sections) so a page's colors don't shift between
+//     requests.
+// ============================================================================
+
+// hue, deep, surface — index-aligned so loops can pair them without darken().
+$dash-hues: $accent-indigo, $accent-violet, $accent-cyan, $accent-teal, $accent-rose, $accent-amber;
+$dash-hues-deep: $accent-indigo-deep, $accent-violet-deep, $accent-cyan-deep, $accent-teal-deep,
+  $accent-rose-deep, $accent-amber-deep;
+$dash-hues-surface: $accent-indigo-surface, $accent-violet-surface, $accent-cyan-surface,
+  $accent-teal-surface, $accent-rose-surface, $accent-amber-surface;
+
+// Paints a metric tile: left accent bar, soft tinted body, colored label+value.
+@mixin stat-hue($base, $deep, $surface) {
+  background: linear-gradient(135deg, #fff 52%, $surface);
+  border-color: rgba($base, 0.22);
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, $base, $deep);
+  }
+
+  >.mono-caps {
+    color: $deep;
+  }
+
+  >.stat-value {
+    color: $deep;
+  }
+}
+
+// Paints a panel header band plus its eyebrow rule and label.
+@mixin panel-hue($base, $deep, $surface) {
+  background: linear-gradient(90deg, $surface, rgba(255, 255, 255, 0));
+  box-shadow: inset 0 2px 0 $base;
+
+  .eyebrow-rule {
+    background: linear-gradient(90deg, $base, $deep);
+  }
+
+  .mono-eyebrow {
+    color: $deep;
+  }
+}
+
+@mixin icon-hue($base, $deep, $surface) {
+  background: $surface;
+  border-color: rgba($base, 0.28);
+  color: $deep;
+}
+
+.app-shell {
+  // Livelier canvas: a barely-there multi-hue wash instead of flat grey-green.
+  background-color: var(--page-bg);
+  background-image:
+    radial-gradient(ellipse 60% 45% at 8% 0%, rgba($brand, 0.07), transparent 60%),
+    radial-gradient(ellipse 55% 40% at 92% 4%, rgba($accent-indigo, 0.06), transparent 58%),
+    radial-gradient(ellipse 50% 45% at 50% 100%, rgba($accent-violet, 0.05), transparent 60%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+
+  // --------------------------------------------------------------------------
+  // Shell chrome
+  // --------------------------------------------------------------------------
+
+  // Rainbow hairline under the sidebar brand — starts green (primary first).
+  .app-sidebar-accent {
+    background-image: linear-gradient(90deg,
+        $brand 0%,
+        $accent-teal 50%,
+        $accent-cyan 100%,
+      );
+  }
+
+  .app-topbar {
+    background-image: linear-gradient(90deg,
+        rgba($brand, 0.05),
+        rgba($accent-indigo, 0.05) 55%,
+        rgba($accent-violet, 0.05));
+    border-bottom-color: rgba($accent-indigo, 0.16);
+  }
+
+  // Page title band: soft brand-to-accent wash + gradient underline.
+  .app-page-header {
+    position: relative;
+    background-image: linear-gradient(100deg,
+        rgba($brand, 0.09) 0%,
+        rgba($accent-teal, 0.06) 50%,
+        // rgba($accent-indigo, 0.06) 62%,
+        rgba($accent-cyan, 0.05) 100%);
+    border-bottom-color: transparent;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 2px;
+      background: linear-gradient(90deg,
+          $brand 0%,
+          $accent-teal 50%,
+          $accent-cyan 100%,
+          // $accent-indigo 62%,
+          // $accent-violet 82%,
+          // $accent-rose 100%
+        );
+      opacity: 0.65;
+    }
+  }
+
+  .app-footer {
+    border-top-color: rgba($accent-indigo, 0.16);
+    background-image: linear-gradient(90deg, rgba($brand, 0.04), rgba($accent-violet, 0.04));
+  }
+
+  // --------------------------------------------------------------------------
+  // Sidebar navigation — per-item icon hues. The active item stays green.
+  // --------------------------------------------------------------------------
+  .app-sidebar-nav {
+    .nav-item-app:not(.active) {
+      position: relative;
+
+      // Colored left stub grows in on hover; tinted per item in the loop below.
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 0;
+        border-radius: 0 2px 2px 0;
+        background: currentColor;
+        transition: height 0.15s ease;
+      }
+
+      &:hover::before {
+        height: 60%;
+      }
+    }
+
+    // Offset by 1: the first child of the nav is `.nav-section-label`.
+    @for $i from 1 through 6 {
+      $hue: nth($dash-hues, $i);
+
+      .nav-item-app:not(.active):nth-child(6n + #{$i + 1}) {
+        .nav-icon {
+          color: $hue;
+        }
+
+        &::before {
+          background: $hue;
+        }
+
+        &:hover {
+          background: rgba($hue, 0.09);
+          color: $hue;
+        }
+      }
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // Metric tiles — hues rotate across each grid row.
+  // Semantic tiles (`.stat-accent`) opt out and keep red / amber / green.
+  // --------------------------------------------------------------------------
+  @for $i from 1 through 4 {
+    .row>*:nth-child(4n + #{$i})>.stat:not(.stat-accent) {
+      @include stat-hue(nth($dash-hues, $i), nth($dash-hues-deep, $i), nth($dash-hues-surface, $i));
+    }
+  }
+
+  // Strengthen the semantic tiles so they read as colored cards too, rather
+  // than plain white next to their tinted neighbours.
+  .stat-accent {
+    border-color: rgba($brand, 0.22);
+    background: linear-gradient(135deg, #fff 52%, rgba($brand, 0.1));
+
+    &::before {
+      background: linear-gradient(180deg, $brand, $brand-deep);
+    }
+  }
+
+  .stat-accent.stat-accent-error {
+    border-color: rgba($danger, 0.2);
+    background: linear-gradient(135deg, #fff 52%, $badge-red-surface);
+
+    &::before {
+      background: linear-gradient(180deg, #ff4d4d, $danger);
+    }
+  }
+
+  .stat-accent.stat-accent-amber {
+    border-color: rgba($accent-amber, 0.24);
+    background: linear-gradient(135deg, #fff 52%, $accent-amber-surface);
+
+    &::before {
+      background: linear-gradient(180deg, $accent-amber, $accent-amber-deep);
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // Panel headers
+  // --------------------------------------------------------------------------
+
+  // Default band: multi-hue, stable regardless of surrounding markup.
+  .panel-header {
+    background: linear-gradient(90deg,
+        rgba($brand, 0.1) 0%,
+        rgba($accent-cyan, 0.07) 45%,
+        rgba($accent-violet, 0.05) 100%);
+    box-shadow: inset 0 2px 0 $brand;
+    border-bottom-color: rgba($accent-indigo, 0.12);
+
+    .eyebrow-rule {
+      background: linear-gradient(90deg, $brand, $accent-cyan);
+    }
+
+    .mono-eyebrow {
+      color: $brand-deep;
+    }
+  }
+
+  // Panels sitting side by side in one row must not share a hue.
+  .row>*:nth-child(2n + 1) .panel-header {
+    @include panel-hue($brand, $brand-deep, rgba($brand, 0.1));
+  }
+
+  .row>*:nth-child(2n) .panel-header {
+    @include panel-hue($accent-violet, $accent-violet-deep, $accent-violet-surface);
+  }
+
+  .panel-footer {
+    background: linear-gradient(90deg, rgba($accent-indigo, 0.05), rgba($accent-violet, 0.04));
+    border-top-color: rgba($accent-indigo, 0.14);
+  }
+
+  // --------------------------------------------------------------------------
+  // Tables
+  // --------------------------------------------------------------------------
+  .tbl {
+    thead th {
+      background-image: linear-gradient(180deg,
+          rgba($accent-indigo, 0.09),
+          rgba($accent-violet, 0.05));
+      color: $accent-indigo-deep;
+      border-bottom-color: rgba($accent-indigo, 0.2);
+    }
+
+    tbody tr:hover {
+      background: linear-gradient(90deg, rgba($brand, 0.07), rgba($accent-cyan, 0.05));
+    }
+
+    // Zebra tint keeps long lists readable instead of flat white.
+    tbody tr:nth-child(even):not(:hover):not(.row-stock-empty) {
+      background: rgba($accent-indigo, 0.028);
+    }
+  }
+
+  // Row avatars cycle hues; admin avatars keep the brand green.
+  @for $i from 1 through 6 {
+    .tbl tbody tr:nth-child(6n + #{$i}) .avatar:not(.avatar-brand) {
+      background: linear-gradient(140deg, nth($dash-hues, $i), nth($dash-hues-deep, $i));
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // Small components
+  // --------------------------------------------------------------------------
+
+  // Icon tiles cycle hues per grid position.
+  @for $i from 1 through 4 {
+    .row>*:nth-child(4n + #{$i}) .icon-box {
+      @include icon-hue(nth($dash-hues, $i), nth($dash-hues-deep, $i), nth($dash-hues-surface, $i));
+    }
+  }
+
+  // The solid green quick-action card owns its icon styling. The doubled class
+  // matches the specificity of the nth-child loop above and wins on source order.
+  .feature-brand.feature-brand .icon-box {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #fff;
+  }
+
+  // Neutral "filled" chips (rule codes, roles, periods) read indigo in-app
+  // instead of near-black, previously the flattest element on these screens.
+  .badge-filled {
+    background: linear-gradient(140deg, $accent-indigo, $accent-violet-deep);
+    border-color: transparent;
+    color: #fff;
+  }
+
+  .badge-neutral {
+    background: linear-gradient(140deg, rgba($accent-indigo, 0.1), rgba($accent-violet, 0.1));
+    border-color: rgba($accent-indigo, 0.18);
+    color: $accent-indigo-deep;
+  }
+
+  // Inactive tabs pick up a tint on hover; the selected tab stays green.
+  .btn-app-tab:not(.is-active):hover {
+    background: rgba($accent-indigo, 0.08);
+    border-color: rgba($accent-indigo, 0.3);
+    color: $accent-indigo-deep;
+  }
+
+  .empty-icon {
+    background: linear-gradient(140deg, $accent-indigo-surface, $accent-violet-surface);
+    border-color: rgba($accent-indigo, 0.2);
+    color: $accent-indigo-deep;
+  }
+
+  .surface-2 {
+    background-image: linear-gradient(140deg, rgba($accent-indigo, 0.05), rgba($accent-violet, 0.04));
+    border-color: rgba($accent-indigo, 0.14);
+  }
+
+  .hairline-rule {
+    background: linear-gradient(90deg,
+        rgba($brand, 0.5),
+        rgba($accent-indigo, 0.4),
+        rgba($accent-violet, 0.3));
+  }
+
+  // Section eyebrows outside panel headers get the gradient rule too.
+  .section-eyebrow-row>.eyebrow-rule {
+    background: linear-gradient(90deg, $brand, $accent-indigo);
+  }
+
+  .user-menu-trigger {
+    background: linear-gradient(140deg, #fff, rgba($accent-indigo, 0.06));
+    border-color: rgba($accent-indigo, 0.2);
+  }
+
+  .alert-info {
+    background: linear-gradient(90deg, rgba($accent-indigo, 0.09), rgba($accent-violet, 0.06));
+    border-color: rgba($accent-indigo, 0.22);
+    color: $accent-indigo-deep;
+  }
+}

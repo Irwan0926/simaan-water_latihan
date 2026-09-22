@@ -1,0 +1,57 @@
+@import "variables";
+@import "bootstrap/scss/bootstrap";
+@import "tokens";
+@import "typography";
+@import "components";
+@import "layout";
+@import "utilities";
+// Dashboard-only accent layer. Must load after components/layout so it can
+// override base surfaces; scoped to `.app-shell` so the landing page is safe.
+@import "colorful";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--page-bg);
+  color: var(--ink-soft);
+  font-family: $font-family-sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: rgba(46, 168, 79, 0.18);
+  color: var(--ink);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d5dbd7;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b8c0bb;
+}
+
+// Bootstrap form-control polish in app
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 0.2rem rgba(46, 168, 79, 0.15);
+}
