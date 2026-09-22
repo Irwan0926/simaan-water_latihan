@@ -21,6 +21,7 @@ Route::get('/', function () {
 |--------------------------------------------------------------------------
 */
 
+// Link dashboard
 Route::get(
     '/dashboard',
     [DashboardController::class, 'index']
