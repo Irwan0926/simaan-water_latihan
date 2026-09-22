@@ -2,7 +2,7 @@
 
 ## Tentang aplikasi ini
 
-Siman water adalah ....
+Siman water adalah aplikasi untuk umkm
 
 - [Simple, fast routing engine](https://laravel.com/docs/routing).
 - [Powerful dependency injection container](https://laravel.com/docs/container).
